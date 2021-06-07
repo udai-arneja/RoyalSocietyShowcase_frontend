@@ -6,48 +6,48 @@
 
 const request = require('request');
 
-function test(data){
+function sendData(data){
 
   const options = {
     url: "http://localhost:5000/command",
     json: true,
-    body: data
-  };
+    body: data,
+    method: "POST",
+   //  headers: {"X-CSRFToken": csrfToken}
+};
 
-  request.post(options, (err, res, body) => {
-
-      if (err) {
-          return console.log(err);
-      }
-      console.log(`Status: ${res.statusCode}`);
-      console.log(body);
+  request(options, (err, res, body) => {
+  
+    if (err) {
+        return console.log(err);
+    }
+    console.log(`Status: ${res.statusCode}`);
+    console.log(body);
   });
 };
 
 
 window.onload = async function() {
-
+    var video = document.getElementById("vidframe");
     webgazer.params.showVideoPreview = true;
     //start the webgazer tracker
     await webgazer.setRegression('ridge') /* currently must set regression and tracker */
-        //.setTracker('clmtrackr')
-        .setGazeListener(function(data, clock) {
-
-            if (data!= null){
-
-                x = Object.values(data)[0]
-                y = Object.values(data)[1]
-                coords = {
-                    "x": x,
-                    "y": y
-                }
-                test(coords)
-            }
-            else{
-                console.log("null via message");
-            }
-            // console.log(data); /* data is an object containing an x and y key which are the x and y prediction coordinates (no bounds limiting) */
-            // console.log(clock); /* elapsed time in milliseconds since webgazer.begin() was called */
+        webgazer.setGazeListener(function(data, clock) {
+          let boundingVid = video.getBoundingClientRect();  //getting vid element size
+          if(boundingVid.width !=0){
+              if (data!= null){
+                  boundedData = bound(data, boundingVid)
+              if (document.visibilityState === 'hidden' || boundedData == "no"){
+                  // sendData({"x": -1, "y": -1})
+                  console.log("null via message");
+              } else {
+                  sendData(boundedData)
+              }
+                    }
+                    else{
+                        console.log("null via message");
+                    }
+                  }
         })
         .saveDataAcrossSessions(true)
         .begin();
@@ -68,12 +68,42 @@ window.onload = async function() {
 
 };
 
+$(document).ready(function(){
+  $(".commands").click(function(){
+    var id = $(this).attr('id');
+    console.log("here");
+    if(id == "Pt1B"){
+      sendData("one")
+    }
+    if(id == "Pt2B"){
+      sendData("two")
+    }
+    if(id == "Pt3B"){
+      sendData("three")
+    }
+  });
+});
+
 // Set to true if you want to save the data even if you reload the page.
 window.saveDataAcrossSessions = true;
 
 window.onbeforeunload = function() {
     webgazer.end();
 }
+
+bound = function(prediction, boundingVid){
+  // var dataOut = prediction.clone();
+  boundedCoords={"x":0, "y":0}
+  if(prediction.x < boundingVid.x || prediction.x > boundingVid.right)
+      return "no"
+  if(prediction.y < boundingVid.y || prediction.y > boundingVid.bottom)
+    return "no"
+  else{
+    boundedCoords.x = (prediction.x-boundingVid.x)/boundingVid.width
+    boundedCoords.y = (prediction.y-boundingVid.y)/boundingVid.height
+  }
+  return boundedCoords;
+};
 
 
 },{"request":109}],2:[function(require,module,exports){
