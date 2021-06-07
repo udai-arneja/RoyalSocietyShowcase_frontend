@@ -5,15 +5,25 @@ var CalibrationPoints={};
  * Clear the canvas and the calibration button.
  */
 function ClearCanvas(){
-  $(".Calibration").hide();
+  $(".Calibration").hide();  
+  $(".commands").hide();
+  document.getElementById("vidframe").style.display= 'none';
   var canvas = document.getElementById("plotting_canvas");
   canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function showVideoMode() {
+  var video = document.getElementById("vidframe");  
+  video.style.display= 'block';
+  $(".commands").show();
+  document.getElementById("webgazerNavbar").style.display= 'block';
 }
 
 /**
  * Show the instruction of using calibration at the start up screen.
  */
-function PopUpInstruction(){
+ function PopUpInstruction(){
+  document.getElementById("vidframe").style.display= 'none';
   ClearCanvas();
   swal({
     title:"Calibration",
@@ -24,6 +34,7 @@ function PopUpInstruction(){
     }
   }).then(isConfirm => {
     ShowCalibrationPoint();
+    document.getElementById("webgazerNavbar").style.display= 'block';
   });
 
 }
@@ -40,6 +51,7 @@ function helpModalShow() {
 * checks that all buttons have been clicked 5 times each, and then goes on to measuring the precision
 */
 $(document).ready(function(){
+  document.getElementById("webgazerNavbar").style.display= 'none';
   ClearCanvas();
   helpModalShow();
      $(".Calibration").click(function(){ // click event on the calibration buttons
@@ -106,6 +118,7 @@ $(document).ready(function(){
                           if (isConfirm){
                             //clear the calibration & hide the last middle button
                             ClearCanvas();
+                            showVideoMode();
                           } else {
                             //use restart function to restart the calibration
                             document.getElementById("Accuracy").innerHTML = "<a>Not yet Calibrated</a>";
