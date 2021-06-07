@@ -82,6 +82,19 @@ li {
     position:fixed;
 }
 
+.commands{
+    width: 60px;
+    height: 60px;
+    -webkit-border-radius: 25px;
+    -moz-border-radius: 25px;
+    border-radius: 25px;
+    background-color: red;
+    opacity: 0.2;
+    border-color: black;
+    border-style: solid;
+    position:fixed;
+}
+
 /* Calibration point position */
 #Pt1{
     top: 70px;
@@ -119,4 +132,20 @@ li {
 #Pt9{
     bottom:2vw;
     right:2vw;
+}
+
+/* Button point position */
+
+#Pt1B{
+    top: 50vh;
+    left:2vw;
+}
+#Pt2B{
+    top: 60vh;
+    left:2vw;
+    margin-left: 340;
+}
+#Pt3B{
+    top: 70vh;
+    left:2vw;
 }
