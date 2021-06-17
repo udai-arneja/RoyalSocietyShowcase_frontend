@@ -4,9 +4,10 @@ var CalibrationPoints={};
 /**
  * Clear the canvas and the calibration button.
  */
-function ClearCanvas(){
-  $(".Calibration").hide();  
+ function ClearCanvas(){
+  $(".Calibration").hide();
   $(".commands").hide();
+  $(".RegInformation").hide();
   document.getElementById("vidframe").style.display= 'none';
   var canvas = document.getElementById("plotting_canvas");
   canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
@@ -16,13 +17,14 @@ function showVideoMode() {
   var video = document.getElementById("vidframe");  
   video.style.display= 'block';
   $(".commands").show();
+  $(".RegInformation").show();
   document.getElementById("webgazerNavbar").style.display= 'block';
 }
 
 /**
  * Show the instruction of using calibration at the start up screen.
  */
- function PopUpInstruction(){
+function PopUpInstruction(){
   document.getElementById("vidframe").style.display= 'none';
   ClearCanvas();
   swal({
@@ -44,6 +46,7 @@ function showVideoMode() {
 function helpModalShow() {
     $('#helpModal').modal('show');
 }
+
 
 /**
  * Load this function when the index page starts.
