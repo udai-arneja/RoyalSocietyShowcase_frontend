@@ -203,27 +203,7 @@
     };
     return eyeData;
   }
-  
-  // $(document).ready(function(){
-  //   $(".commands").click(function(){
-  //     var id = $(this).attr('id');
-  //     if(id == "Pt1R"){
-  //       console.log('ridge');
-  //       regressionType = 'ridge';
-  //       document.getElementById("Info").innerHTML = "Ridge";
-  //     }
-  //     if(id == "Pt2R"){
-  //       console.log('weighted ridge');
-  //       regressionType = 'weightedRidge';
-  //       document.getElementById("Info").innerHTML = "Weighted Ridge";
-  //     }
-  //     if(id == "Pt3R"){
-  //       console.log('threaded ridge');
-  //       regressionType = 'threadedRidge';
-  //       document.getElementById("Info").innerHTML = "Threaded Ridge";
-  //     }
-  //   });
-  // });
+
   
   // Set to true if you want to save the data even if you reload the page.
   window.saveDataAcrossSessions = true;

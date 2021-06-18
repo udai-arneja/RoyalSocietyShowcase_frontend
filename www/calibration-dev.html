@@ -14,19 +14,23 @@ Instructions on use can be found in the README repository.
         <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
         <TITLE>WebGazer Demo</TITLE>
         <link rel="stylesheet" type="text/css" href="./css/style.css">
-        <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="./css/bootstrap.min.css">
         <!-- <script src="./tensorflow.js"></script> -->
+        <script> 
+          var facemeshReadings;
+          var vidInfoHeight;
+          var vidInfoWidth;
+        </script>
         <script src="./webgazer.js"></script>
     </head>
     <style>
-      video{ justify-content: center;margin: 0 auto; z-index: 1;}
-    </style>
+      iframe{ justify-content: center;margin: 0 auto; z-index: 1;}
+      </style>
     <body LANG="en-US" LINK="#0000ff" DIR="LTR">
       <canvas id="plotting_canvas" width="500" height="500" style="cursor:crosshair;"></canvas>
 
-        <script src="./node_modules/jquery/dist/jquery.min.js"></script>
+        <script src="./js/jquery.min.js"></script>
         <script src="./node_modules/sweetalert/dist/sweetalert.min.js"></script>
-        <!-- <script src="./node_modules/request/dist/request.min.js"></script> -->
 
         <script src="./js/main2.js"></script>
         <script src="./js/calibration.js"></script>
@@ -40,6 +44,11 @@ Instructions on use can be found in the README repository.
               <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
                 <span class="icon-bar">Menu</span>
               </button>
+              <a id="ModeInfo"></a>
+              <a id="zcoord1"></a>
+              <a id="zcoord2"></a>
+              <a id="coord1"></a>
+              <a id="coord2"></a>
             </div>
             <div class="collapse navbar-collapse" id="myNavbar">
               <ul class="nav navbar-nav">
@@ -54,10 +63,13 @@ Instructions on use can be found in the README repository.
             </div>
           </div>
         </nav>
-        <video id="vidframe" autoplay>
-          <source src="https://harms.rcs.ic.ac.uk/kuka" type="video/ogg" />
-          No video
-        </video>
+          
+        <iframe  id="vidframe" width="800" height="500" 
+        src="https://www.youtube.com/embed/TAOM449H6Y8" title="YouTube video player"
+        frameborder="2" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen>
+        <p>Your browser does not support iframes.</p></iframe>
+
         <!-- Calibration points -->
         <div class="calibrationDiv">
             <input type="button" class="Calibration" id="Pt1"></input>
@@ -70,11 +82,6 @@ Instructions on use can be found in the README repository.
             <input type="button" class="Calibration" id="Pt8"></input>
             <input type="button" class="Calibration" id="Pt9"></input>
         </div>
-        <div class="otherCommandsDiv">
-          <input type="button" class="commands" id="Pt1B"></input>
-          <input type="button" class="commands" id="Pt2B"></input>
-          <input type="button" class="commands" id="Pt3B"></input>
-      </div>
 
         <!-- Modal -->
         <div id="helpModal" class="modal fade" role="dialog">
@@ -86,7 +93,7 @@ Instructions on use can be found in the README repository.
                 <img src="media/example/calibration.png" width="100%" height="100%" alt="webgazer demo instructions"></img>
               </div>
               <div class="modal-footer">
-                <button id="closeBtn" type="button" class="btn btn-default" data-dismiss="modal" onclick="skipCali()">Close & load saved model </button>
+                <button id="closeBtn" type="button" class="btn btn-default" data-dismiss="modal">Close & load saved model </button>
                 <button type="button" id='start_calibration' class="btn btn-primary" data-dismiss="modal" onclick="Restart()">Calibrate</button>
               </div>
             </div>
@@ -94,23 +101,18 @@ Instructions on use can be found in the README repository.
           </div>
         </div>
 
+        
+<!--  -->
         <!-- Latest compiled JavaScript -->
         <script src="./js/resize_canvas.js"></script>
-        <script src="./node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="./js/bootstrap.min.js"></script>
         <script>
            function Restart(){
               document.getElementById("Accuracy").innerHTML = "<a>Not yet Calibrated</a>";
               webgazer.clearData();
               ClearCalibration();
               PopUpInstruction();
-            };
-            function skipCali(){
-              // document.getElementById("Accuracy").innerHTML = "<a>Not yet Calibrated</a>";
-              // webgazer.clearData();
-              // ClearCalibration();
-              // PopUpInstruction();
-              showVideoMode();
-            };
+          };
         </script>
     </body>
 </html>
