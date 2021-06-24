@@ -5,7 +5,7 @@
    */
   
   const request = require('request');
-  var regressionType = "ridge"; 
+  var regressionType = "weightedRidge"; 
   
   function sendData(data){
   
@@ -51,24 +51,26 @@
                 dataToSend = {...diffAverages, ...leftEye(facemesh), ...rightEye(facemesh), ...noseBridge(facemesh), ...noseTop(facemesh), ...mouthMiddle(facemesh)};
                 document.getElementById("zcoord1").innerHTML = ("avg one: " + avgOne);
                 document.getElementById("zcoord2").innerHTML = ("avg two: " + avgTwo);
-                document.getElementById("coord1").innerHTML = ("under right Y: " + dataToSend["underLeftEyeY"]);
-                document.getElementById("coord2").innerHTML = ("under right X: " + dataToSend["underLeftEyeX"]);
+                document.getElementById("coord1").innerHTML = ("under right Z: " + dataToSend["underRightEyeZ"]);
+                document.getElementById("coord2").innerHTML = ("under left Z: " + dataToSend["underLeftEyeZ"]);
               }
             }
             let boundingVid = video.getBoundingClientRect();
+            // adds a box depending on which segement the user is looking
             if(boundingVid.width !=0){
                 if (data!= null){
                     boundedData = bound(data, boundingVid)
+                    // eyePlacement(data, boundingVid, boundedData);
                     if (document.visibilityState === 'hidden' || boundedData == "no"){
                       dataToSend["x"]=-1;
                       dataToSend["y"]=-1;
-                      console.log(dataToSend)
-                      sendData(dataToSend)
+                      // console.log(dataToSend)
+                      // sendData(dataToSend)
                     } else {
                       dataToSend["x"]=boundedData["x"];
                       dataToSend["y"]=boundedData["y"];
-                      console.log(dataToSend)
-                      sendData(dataToSend)
+                      // console.log(dataToSend)
+                      // sendData(dataToSend)
                     }
                 }
                 else{
@@ -78,7 +80,7 @@
               // console.log(data); /* data is an object containing an x and y key which are the x and y prediction coordinates (no bounds limiting) */
               // console.log(clock); /* elapsed time in milliseconds since webgazer.begin() was called */
           })
-          .saveDataAcrossSessions(true)
+          .saveDataAcrossSessions(false)
           .begin();
           webgazer.showVideoPreview(true) /* shows all video previews */
               .showPredictionPoints(true) /* shows a square every 100 milliseconds where current prediction is */
@@ -96,7 +98,7 @@
       setup();
   
   };
-  
+
   $(document).ready(function(){
     $(".commands").click(function(){
       var id = $(this).attr('id');
@@ -211,15 +213,53 @@
   window.onbeforeunload = function() {
       webgazer.end();
   }
+
+  function blueScreen(gazeLoc, vidDims){
+    var canvas = document.getElementById("plotting_canvas");
+    var ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'rgba(255,209,220,0.3)';
+    var xHalfOfTheVid =((vidDims.right-vidDims.x)/2+vidDims.x);
+    var yHalfOfTheVid =((vidDims.bottom-vidDims.y)/2+vidDims.y);
+    if(gazeLoc.x < xHalfOfTheVid){
+      var xStart = vidDims.x;
+      var xEnd = xHalfOfTheVid-vidDims.x;
+      console.log(vidDims.x, vidDims.right, xStart, xEnd);
+    }
+    else{
+      var xStart = xHalfOfTheVid;
+      var xEnd = vidDims.right;
+    }
+    if(gazeLoc.y < yHalfOfTheVid){
+      var yStart = vidDims.y;
+      var yEnd = yHalfOfTheVid-vidDims.y;
+    }
+    else{
+      var yStart = yHalfOfTheVid;
+      var yEnd = vidDims.bottom;
+    }
+    // console.log(vidDims.x, vidDims.right, xStart, xEnd);
+    ctx.fillRect(xStart, yStart, xEnd, yEnd);
+  }
+
+  function cleanScreen(vidDims){
+    var canvas = document.getElementById("plotting_canvas");
+    var ctx = canvas.getContext("2d");
+    ctx.clearRect(vidDims.x, vidDims.y, vidDims.right, vidDims.bottom);
+  }
   
   bound = function(prediction, boundingVid){
-    // var dataOut = prediction.clone();
     boundedCoords={"x":0, "y":0}
-    if(prediction.x < boundingVid.x || prediction.x > boundingVid.right)
-        return "no"
-    if(prediction.y < boundingVid.y || prediction.y > boundingVid.bottom)
-      return "no"
+    if(prediction.x < boundingVid.x || prediction.x > boundingVid.right){
+      cleanScreen(boundingVid);
+      return "no";
+    }
+    if(prediction.y < boundingVid.y || prediction.y > boundingVid.bottom){
+      cleanScreen(boundingVid);
+      return "no";
+    }
     else{
+      blueScreen(prediction, boundingVid);
       boundedCoords.x = (prediction.x-boundingVid.x)/boundingVid.width
       boundedCoords.y = (prediction.y-boundingVid.y)/boundingVid.height
     }

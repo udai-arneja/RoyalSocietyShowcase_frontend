@@ -23,9 +23,6 @@ Instructions on use can be found in the README repository.
         </script>
         <script src="./webgazer.js"></script>
     </head>
-    <style>
-      iframe{ justify-content: center;margin: 0 auto; z-index: 1;}
-      </style>
     <body LANG="en-US" LINK="#0000ff" DIR="LTR">
       <canvas id="plotting_canvas" width="500" height="500" style="cursor:crosshair;"></canvas>
 
@@ -36,7 +33,7 @@ Instructions on use can be found in the README repository.
         <script src="./js/calibration.js"></script>
         <script src="./js/precision_calculation.js"></script>
         <script src="./js/precision_store_points.js"></script>
-
+        
         <nav id="webgazerNavbar" class="navbar navbar-default navbar-fixed-top">
           <div class="container-fluid">
             <div class="navbar-header">
@@ -63,12 +60,8 @@ Instructions on use can be found in the README repository.
             </div>
           </div>
         </nav>
-          
-        <iframe  id="vidframe" width="800" height="500" 
-        src="https://www.youtube.com/embed/TAOM449H6Y8" title="YouTube video player"
-        frameborder="2" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-        allowfullscreen>
-        <p>Your browser does not support iframes.</p></iframe>
+        <div id="vidframe"></div>
+
 
         <!-- Calibration points -->
         <div class="calibrationDiv">
@@ -93,16 +86,13 @@ Instructions on use can be found in the README repository.
                 <img src="media/example/calibration.png" width="100%" height="100%" alt="webgazer demo instructions"></img>
               </div>
               <div class="modal-footer">
-                <button id="closeBtn" type="button" class="btn btn-default" data-dismiss="modal">Close & load saved model </button>
+                <button id="closeBtn" type="button" class="btn btn-default" data-dismiss="modal" onclick="skipCali()">Close & load saved model </button>
                 <button type="button" id='start_calibration' class="btn btn-primary" data-dismiss="modal" onclick="Restart()">Calibrate</button>
               </div>
             </div>
 
           </div>
         </div>
-
-        
-<!--  -->
         <!-- Latest compiled JavaScript -->
         <script src="./js/resize_canvas.js"></script>
         <script src="./js/bootstrap.min.js"></script>
@@ -113,6 +103,22 @@ Instructions on use can be found in the README repository.
               ClearCalibration();
               PopUpInstruction();
           };
+          function skipCali(){
+            showVideoMode();
+          };
         </script>
     </body>
+    <style>
+      #vidframe{
+      justify-content: right;
+      margin-right: 0;
+      margin-left: auto;
+      z-index: 1;
+      width:80%;
+      border-style: solid;
+      border-color: black;
+      border-radius: 5px;
+      height:calc(100vh - 45px);
+    }
+    </style>
 </html>
