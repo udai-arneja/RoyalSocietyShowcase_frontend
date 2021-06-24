@@ -96,7 +96,6 @@
           canvas.style.position = 'fixed';
       };
       setup();
-  
   };
 
   $(document).ready(function(){
@@ -133,75 +132,68 @@
     var eyesAvg = ((underLeftEyeZ+aboveLeftEyeZ+underRightEyeZ+aboveRightEyeZ)/4);
     return eyesAvg.toFixed(5);
   }
+
+  function getXYZ(facemeshArray, featureNumber){
+    var featureX = parseFloat(facemeshArray[featureNumber][0].toFixed(5));
+    var featureY = parseFloat(facemeshArray[featureNumber][1].toFixed(5))
+    var featureZ = parseFloat(facemeshArray[featureNumber][2].toFixed(5))
+    return [featureX,featureY,featureZ]
+  };
   
   function noseBridge(facemeshArray){
-    var noseBridgeX  = facemeshArray[168][0];
-    var noseBridgeY = facemeshArray[168][1];
-    var noseBridgeZ = facemeshArray[168][2];
+    noseBridgeInfo = getXYZ(facemeshArray, 168)
     noseBridgeData={
-      "noseBridgeX":parseFloat(noseBridgeX.toFixed(5)),
-      "noseBridgeY":parseFloat(noseBridgeY.toFixed(5)),
-      "noseBridgeZ":parseFloat(noseBridgeZ.toFixed(5))
+      "noseBridgeX":noseBridgeInfo[0],
+      "noseBridgeY":noseBridgeInfo[1],
+      "noseBridgeZ":noseBridgeInfo[2]
     };
     return noseBridgeData;
   }
   
   function noseTop(facemeshArray){
-    var noseTopX  = facemeshArray[94][0];
-    var noseTopY = facemeshArray[94][1];
-    var noseTopZ = facemeshArray[94][2];
+    noseTopInfo = getXYZ(facemeshArray, 94)
     noseTopData={
-      "noseTopX":parseFloat(noseTopX.toFixed(5)),
-      "noseTopY":parseFloat(noseTopY.toFixed(5)),
-      "noseTopZ":parseFloat(noseTopZ.toFixed(5))
+      "noseTopX":noseTopInfo[0],
+      "noseTopY":noseTopInfo[1],
+      "noseTopZ":noseTopInfo[2]
     };
     return noseTopData;
   }
   
   function mouthMiddle(facemeshArray){
-    var mouthMiddleX  = facemeshArray[14][0];
-    var mouthMiddleY = facemeshArray[14][1];
-    var mouthMiddleZ = facemeshArray[14][2];
+    mouthMiddleInfo = getXYZ(facemeshArray, 14)
     mouthData={
-      "mouthMiddleX":parseFloat(mouthMiddleX.toFixed(5)),
-      "mouthMiddleY":parseFloat(mouthMiddleY.toFixed(5)),
-      "mouthMiddleZ":parseFloat(mouthMiddleZ.toFixed(5))
+      "mouthMiddleX":mouthMiddleInfo[0],
+      "mouthMiddleY":mouthMiddleInfo[1],
+      "mouthMiddleZ":mouthMiddleInfo[2]
     };
     return mouthData;
   }
   
   function rightEye(facemeshArray){
-    var underRightEyeX = facemeshArray[23][0];
-    var underRightEyeY = facemeshArray[23][1];
-    var underRightEyeZ = facemeshArray[23][2];
-    var aboveRightEyeX = facemeshArray[27][0];
-    var aboveRightEyeY = facemeshArray[27][1];
-    var aboveRightEyeZ = facemeshArray[27][2];
+    underRightEyeInfo = getXYZ(facemeshArray, 23)
+    aboveRightEyeInfo = getXYZ(facemeshArray, 27)
     eyeData={
-      "underRightEyeX":parseFloat(underRightEyeX.toFixed(5)),
-      "underRightEyeY":parseFloat(underRightEyeY.toFixed(5)),
-      "underRightEyeZ":parseFloat(underRightEyeZ.toFixed(5)),
-      "aboveRightEyeX":parseFloat(aboveRightEyeX.toFixed(5)),
-      "aboveRightEyeY":parseFloat(aboveRightEyeY.toFixed(5)),
-      "aboveRightEyeZ":parseFloat(aboveRightEyeZ.toFixed(5))
+      "underRightEyeX":underRightEyeInfo[0],
+      "underRightEyeY":underRightEyeInfo[1],
+      "underRightEyeZ":underRightEyeInfo[2],
+      "aboveRightEyeX":aboveRightEyeInfo[0],
+      "aboveRightEyeY":aboveRightEyeInfo[1],
+      "aboveRightEyeZ":aboveRightEyeInfo[2]
     };
     return eyeData;
   }
   
   function leftEye(facemeshArray){
-    var underLeftEyeX = facemeshArray[253][0];
-    var underLeftEyeY = facemeshArray[253][1];
-    var underLeftEyeZ = facemeshArray[253][2];
-    var aboveLeftEyeX = facemeshArray[257][0];
-    var aboveLeftEyeY = facemeshArray[257][1];
-    var aboveLeftEyeZ = facemeshArray[257][2];
+    underLeftEyeInfo = getXYZ(facemeshArray, 253)
+    aboveLeftEyeInfo = getXYZ(facemeshArray, 257)
     eyeData={
-      "underLeftEyeX":parseFloat(underLeftEyeX.toFixed(5)),
-      "underLeftEyeY":parseFloat(underLeftEyeY.toFixed(5)),
-      "underLeftEyeZ":parseFloat(underLeftEyeZ.toFixed(5)),
-      "aboveLeftEyeX":parseFloat(aboveLeftEyeX.toFixed(5)),
-      "aboveLeftEyeY":parseFloat(aboveLeftEyeY.toFixed(5)),
-      "aboveLeftEyeZ":parseFloat(aboveLeftEyeZ.toFixed(5))
+      "underLeftEyeX":underLeftEyeInfo[0],
+      "underLeftEyeY":underLeftEyeInfo[1],
+      "underLeftEyeZ":underLeftEyeInfo[2],
+      "aboveLeftEyeX":aboveLeftEyeInfo[0],
+      "aboveLeftEyeY":aboveLeftEyeInfo[1],
+      "aboveLeftEyeZ":aboveLeftEyeInfo[2]
     };
     return eyeData;
   }
