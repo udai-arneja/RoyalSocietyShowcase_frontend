@@ -57,7 +57,7 @@
                       dataToSend["homing"]=homingInformation;
                       homingInformation=0;
                       dataToSend["status"]="start";
-                      dataToSend["modality"]="game";
+                      dataToSend["modality"]=typeInformation;
                       dataToSend["status"]=startStopInformation;
                     }
                   }
@@ -69,12 +69,12 @@
                           if (document.visibilityState === 'hidden' || boundedData == "no"){
                             dataToSend["x"]=-1;
                             dataToSend["y"]=-1;
-                            console.log(dataToSend["homing"])
+                            console.log(dataToSend["modality"])
                             // sendData(dataToSend)
                           } else {
                             dataToSend["x"]=boundedData["x"];
                             dataToSend["y"]=boundedData["y"];
-                            console.log(dataToSend["homing"])
+                            console.log(dataToSend["modality"])
                             // sendData(dataToSend)
                           }
                       }
@@ -103,7 +103,7 @@
         dataToSend2["keyA"]=0;
         dataToSend2["keyD"]=0;
       document.addEventListener('keydown', function(event){
-        if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].indexOf(event.code) > -1) {
+        if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","KeyW","KeyS","KeyA","KeyD"].indexOf(event.code) > -1) {
             event.preventDefault();
         }
         if (event.code == "ArrowUp") dataToSend2["keyUP"]=1;
@@ -117,7 +117,7 @@
     })
 
     document.addEventListener('keyup', function(event){
-      if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].indexOf(event.code) > -1) {
+      if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","KeyW","KeyS","KeyA","KeyD"].indexOf(event.code) > -1) {
           event.preventDefault();
           dataToSend2["keyUP"]=0;
           dataToSend2["keyDOWN"]=0;
@@ -137,10 +137,10 @@
           dataToSend2["homing"]=homingInformation;
           homingInformation=0;
           dataToSend2["status"]="start";
-          dataToSend2["modality"]="game";
+          dataToSend2["modality"]=typeInformation;
           dataToSend2["status"]=startStopInformation;
-          // console.log(dataToSend2["homing"])
-          // console.log(dataToSend2)
+          console.log(dataToSend2["modality"])
+          console.log(dataToSend2)
         }
       }, 100);
 
