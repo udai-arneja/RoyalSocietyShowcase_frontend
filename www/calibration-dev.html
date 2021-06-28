@@ -20,6 +20,9 @@ Instructions on use can be found in the README repository.
           var facemeshReadings;
           var vidInfoHeight;
           var vidInfoWidth;
+          var modeInformation = "headMovement";
+          var startStopInformation = "start";
+          var homingInformation = 0;
         </script>
         <script src="./webgazer.js"></script>
     </head>
@@ -42,10 +45,13 @@ Instructions on use can be found in the README repository.
                 <span class="icon-bar">Menu</span>
               </button>
               <a id="ModeInfo"></a>
-              <a id="zcoord1"></a>
+              <!-- <a id="zcoord1"></a>
               <a id="zcoord2"></a>
               <a id="coord1"></a>
-              <a id="coord2"></a>
+              <a id="coord2"></a> -->
+              <button><a id="mode" onclick="ChangeMode()">Head Movement</a></button>
+              <button><a id="startStop" onclick="StartStop()">Start</a></button>
+              <button><a id="homingMode" onclick="Homing()">Homing Sequence</a></button>
             </div>
             <div class="collapse navbar-collapse" id="myNavbar">
               <ul class="nav navbar-nav">
@@ -106,6 +112,33 @@ Instructions on use can be found in the README repository.
           function skipCali(){
             showVideoMode();
           };
+          function ChangeMode(){
+            if( document.getElementById("mode").innerHTML == "Head Movement"){
+              console.log("keyboardMovement")
+              modeInformation = "keyboardMovement";
+              document.getElementById("mode").innerHTML = "Keyboard Movement";
+            }
+            else{
+              console.log("headMovement");
+              modeInformation = "headMovement";
+              document.getElementById("mode").innerHTML = "Head Movement";
+            }
+          };
+          function StartStop(){
+            if( document.getElementById("startStop").innerHTML == "Start"){
+              console.log("stop")
+              startStopInformation = "stop";
+              document.getElementById("startStop").innerHTML = "Stop";
+            }
+            else{
+              console.log("start");
+              startStopInformation = "start";
+              document.getElementById("startStop").innerHTML = "Start";
+            }
+          };
+          function Homing(){
+            homingInformation = 1;
+          }
         </script>
     </body>
     <style>

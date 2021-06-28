@@ -28,72 +28,129 @@
   };
   
   
-  
-  
   window.onload = async function() {
+      window.xVal = -1;
+      window.yVal = -1;
       var video = document.getElementById("vidframe");
       webgazer.params.showVideoPreview = true;
       //start the webgazer tracker
-      // console.log("before this one")
       await webgazer.setRegression('ridge') /* currently must set regression and tracker */
-          //.setTracker('clmtrackr')
-          webgazer.setGazeListener(function(data, clock) {
-            if(facemeshReadings != []){
-              var allReadings = facemeshReadings['0'];
-              if(allReadings != undefined){
-                var facemesh = allReadings['scaledMesh'];
-                var avgOne = entireFace(facemesh);
-                var avgTwo = eyesAvg(facemesh);
-                diffAverages={
-                  "avgOne":parseFloat(avgOne),
-                  "avgTwo":parseFloat(avgTwo)
-                };
-                dataToSend = {...diffAverages, ...leftEye(facemesh), ...rightEye(facemesh), ...noseBridge(facemesh), ...noseTop(facemesh), ...mouthMiddle(facemesh)};
-                document.getElementById("zcoord1").innerHTML = ("avg one: " + avgOne);
-                document.getElementById("zcoord2").innerHTML = ("avg two: " + avgTwo);
-                document.getElementById("coord1").innerHTML = ("under right Z: " + dataToSend["underRightEyeZ"]);
-                document.getElementById("coord2").innerHTML = ("under left Z: " + dataToSend["underLeftEyeZ"]);
-              }
-            }
-            let boundingVid = video.getBoundingClientRect();
-            // adds a box depending on which segement the user is looking
-            if(boundingVid.width !=0){
-                if (data!= null){
-                    boundedData = bound(data, boundingVid)
-                    // eyePlacement(data, boundingVid, boundedData);
-                    if (document.visibilityState === 'hidden' || boundedData == "no"){
-                      dataToSend["x"]=-1;
-                      dataToSend["y"]=-1;
-                      // console.log(dataToSend)
-                      // sendData(dataToSend)
-                    } else {
-                      dataToSend["x"]=boundedData["x"];
-                      dataToSend["y"]=boundedData["y"];
-                      // console.log(dataToSend)
-                      // sendData(dataToSend)
+      // document.addEventListener('keydown', function(event){
+      //   if(event.code == "Space"){
+              //.setTracker('clmtrackr')
+
+              webgazer.setGazeListener(function(data, clock) {
+                if(modeInformation == "headMovement"){
+                  if(facemeshReadings != []){
+                    var allReadings = facemeshReadings['0'];
+                    if(allReadings != undefined){
+                      var facemesh = allReadings['scaledMesh'];
+                      var avgOne = entireFace(facemesh);
+                      var avgTwo = eyesAvg(facemesh);
+                      diffAverages={
+                        "avgOne":parseFloat(avgOne),
+                        "avgTwo":parseFloat(avgTwo)
+                      };
+                      dataToSend = {...diffAverages, ...leftEye(facemesh), ...rightEye(facemesh), ...noseBridge(facemesh), ...noseTop(facemesh), ...mouthMiddle(facemesh)};
+                      //status information
+                      dataToSend["control"]="head";
+                      dataToSend["homing"]=homingInformation;
+                      homingInformation=0;
+                      dataToSend["status"]="start";
+                      dataToSend["modality"]="game";
+                      dataToSend["status"]=startStopInformation;
                     }
-                }
-                else{
-                    console.log("null via message");
-                }
-            }
-              // console.log(data); /* data is an object containing an x and y key which are the x and y prediction coordinates (no bounds limiting) */
-              // console.log(clock); /* elapsed time in milliseconds since webgazer.begin() was called */
-          })
-          .saveDataAcrossSessions(false)
-          .begin();
-          webgazer.showVideoPreview(true) /* shows all video previews */
-              .showPredictionPoints(true) /* shows a square every 100 milliseconds where current prediction is */
-              .applyKalmanFilter(true); /* Kalman Filter defaults to on. Can be toggled by user. */
-  
+                  }
+                  let boundingVid = video.getBoundingClientRect();
+                  // adds a box depending on which segement the user is looking
+                  if(boundingVid.width !=0){
+                      if (data!= null){
+                          boundedData = bound(data, boundingVid)
+                          if (document.visibilityState === 'hidden' || boundedData == "no"){
+                            dataToSend["x"]=-1;
+                            dataToSend["y"]=-1;
+                            console.log(dataToSend["homing"])
+                            // sendData(dataToSend)
+                          } else {
+                            dataToSend["x"]=boundedData["x"];
+                            dataToSend["y"]=boundedData["y"];
+                            console.log(dataToSend["homing"])
+                            // sendData(dataToSend)
+                          }
+                      }
+                      else{
+                          console.log("null via message");
+                      }
+                  }
+                    // console.log(data); /* data is an object containing an x and y key which are the x and y prediction coordinates (no bounds limiting) */
+                    // console.log(clock); /* elapsed time in milliseconds since webgazer.begin() was called */
+              }})
+              .saveDataAcrossSessions(false)
+              .begin();
+              webgazer.showVideoPreview(true) /* shows all video previews */
+                  .showPredictionPoints(true) /* shows a square every 100 milliseconds where current prediction is */
+                  .applyKalmanFilter(true); /* Kalman Filter defaults to on. Can be toggled by user. */
+      //   }
+      // })
       //Set up the webgazer video feedback.
+      var dataToSend2={};
+      dataToSend2["keyUP"]=0;
+        dataToSend2["keyDOWN"]=0;
+        dataToSend2["keyLEFT"]=0;
+        dataToSend2["keyRIGHT"]=0;
+        dataToSend2["keyW"]=0;
+        dataToSend2["keyS"]=0;
+        dataToSend2["keyA"]=0;
+        dataToSend2["keyD"]=0;
+      document.addEventListener('keydown', function(event){
+        if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].indexOf(event.code) > -1) {
+            event.preventDefault();
+        }
+        if (event.code == "ArrowUp") dataToSend2["keyUP"]=1;
+        else if (event.code == "ArrowDown") dataToSend2["keyDOWN"]=1;
+        else if (event.code == "ArrowLeft") dataToSend2["keyLEFT"]=1;
+        else if (event.code == "ArrowRight") dataToSend2["keyRIGHT"]=1;
+        else if (event.code == "KeyW") dataToSend2["keyW"]=1;
+        else if (event.code == "KeyS") dataToSend2["keyS"]=1;
+        else if (event.code == "KeyA") dataToSend2["keyA"]=1;
+        else if (event.code == "KeyD") dataToSend2["keyD"]=1;
+    })
+
+    document.addEventListener('keyup', function(event){
+      if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].indexOf(event.code) > -1) {
+          event.preventDefault();
+          dataToSend2["keyUP"]=0;
+          dataToSend2["keyDOWN"]=0;
+          dataToSend2["keyLEFT"]=0;
+          dataToSend2["keyRIGHT"]=0;
+          dataToSend2["keyW"]=0;
+          dataToSend2["keyS"]=0;
+          dataToSend2["keyA"]=0;
+          dataToSend2["keyD"]=0;
+      }
+    })
+      
+        // Send current coordinates at time intervals
+      window.setInterval(function(){
+        if(modeInformation == "keyboardMovement"){
+          dataToSend2["control"]="keyboard";
+          dataToSend2["homing"]=homingInformation;
+          homingInformation=0;
+          dataToSend2["status"]="start";
+          dataToSend2["modality"]="game";
+          dataToSend2["status"]=startStopInformation;
+          // console.log(dataToSend2["homing"])
+          // console.log(dataToSend2)
+        }
+      }, 100);
+
       var setup = function() {
   
-          //Set up the main canvas. The main canvas is used to calibrate the webgazer.
-          var canvas = document.getElementById("plotting_canvas");
-          canvas.width = window.innerWidth;
-          canvas.height = window.innerHeight;
-          canvas.style.position = 'fixed';
+        //Set up the main canvas. The main canvas is used to calibrate the webgazer.
+        var canvas = document.getElementById("plotting_canvas");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        canvas.style.position = 'fixed';
       };
       setup();
   };
@@ -216,7 +273,6 @@
     if(gazeLoc.x < xHalfOfTheVid){
       var xStart = vidDims.x;
       var xEnd = xHalfOfTheVid-vidDims.x;
-      console.log(vidDims.x, vidDims.right, xStart, xEnd);
     }
     else{
       var xStart = xHalfOfTheVid;
