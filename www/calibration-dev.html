@@ -126,15 +126,13 @@ Instructions on use can be found in the README repository.
             }
           };
           function StartStop(){
-            if( document.getElementById("startStop").innerHTML == "Start"){
-              console.log("stop")
+            if( document.getElementById("startStop").innerHTML == "Stop"){
               startStopInformation = "stop";
-              document.getElementById("startStop").innerHTML = "Stop";
+              document.getElementById("startStop").innerHTML = "Start";
             }
             else{
-              console.log("start");
               startStopInformation = "start";
-              document.getElementById("startStop").innerHTML = "Start";
+              document.getElementById("startStop").innerHTML = "Stop";
             }
           };
           function Homing(){

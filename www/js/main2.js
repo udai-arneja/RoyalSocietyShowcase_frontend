@@ -119,15 +119,23 @@
     document.addEventListener('keyup', function(event){
       if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","KeyW","KeyS","KeyA","KeyD"].indexOf(event.code) > -1) {
           event.preventDefault();
-          dataToSend2["keyUP"]=0;
-          dataToSend2["keyDOWN"]=0;
-          dataToSend2["keyLEFT"]=0;
-          dataToSend2["keyRIGHT"]=0;
-          dataToSend2["keyW"]=0;
-          dataToSend2["keyS"]=0;
-          dataToSend2["keyA"]=0;
-          dataToSend2["keyD"]=0;
+          // dataToSend2["keyUP"]=0;
+          // dataToSend2["keyDOWN"]=0;
+          // dataToSend2["keyLEFT"]=0;
+          // dataToSend2["keyRIGHT"]=0;
+          // dataToSend2["keyW"]=0;
+          // dataToSend2["keyS"]=0;
+          // dataToSend2["keyA"]=0;
+          // dataToSend2["keyD"]=0;
       }
+      if (event.code == "ArrowUp") dataToSend2["keyUP"]=0;
+      else if (event.code == "ArrowDown") dataToSend2["keyDOWN"]=0;
+      else if (event.code == "ArrowLeft") dataToSend2["keyLEFT"]=0;
+      else if (event.code == "ArrowRight") dataToSend2["keyRIGHT"]=0;
+      else if (event.code == "KeyW") dataToSend2["keyW"]=0;
+      else if (event.code == "KeyS") dataToSend2["keyS"]=0;
+      else if (event.code == "KeyA") dataToSend2["keyA"]=0;
+      else if (event.code == "KeyD") dataToSend2["keyD"]=0;
     })
       
         // Send current coordinates at time intervals
@@ -139,8 +147,8 @@
           dataToSend2["status"]="start";
           dataToSend2["modality"]=typeInformation;
           dataToSend2["status"]=startStopInformation;
-          console.log(dataToSend2["modality"])
-          console.log(dataToSend2)
+          console.log("D", dataToSend2["keyD"])
+          console.log("W", dataToSend2["keyW"])
         }
       }, 100);
 
