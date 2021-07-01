@@ -21,7 +21,7 @@ Instructions on use can be found in the README repository.
           var vidInfoHeight;
           var vidInfoWidth;
           var modeInformation = "headMovement";
-          var startStopInformation = "start";
+          var startStopInformation = "stop";
           var homingInformation = 0;
           var typeInformation = "game";
         </script>
@@ -42,17 +42,18 @@ Instructions on use can be found in the README repository.
           <div class="container-fluid">
             <div class="navbar-header">
               <!-- The hamburger menu button -->
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+              <!-- <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
                 <span class="icon-bar">Menu</span>
-              </button>
+              </button> -->
               <a id="ModeInfo"></a>
               <!-- <a id="zcoord1"></a>
               <a id="zcoord2"></a>
               <a id="coord1"></a>
               <a id="coord2"></a> -->
-              <button><a id="mode" onclick="ChangeMode()">Head Movement</a></button>
-              <button><a id="startStop" onclick="StartStop()">Start</a></button>
-              <button><a id="homingMode" onclick="Homing()">Homing Sequence</a></button>
+              <a id="modeInfo" onclick="ChangeMode()">Currently: Eye Movement</a>
+              <button><a id="mode" onclick="ChangeMode()">Switch to Keyboard Movement</a></button>
+              <button><a id="startStop" onclick="StartStop()">Click to Start Robot</a></button>
+              <button><a id="homingMode" onclick="Homing()">Homing Sequences</a></button>
             </div>
             <div class="collapse navbar-collapse" id="myNavbar">
               <ul class="nav navbar-nav">
@@ -90,11 +91,13 @@ Instructions on use can be found in the README repository.
             <!-- Modal content-->
             <div class="modal-content">
               <div class="modal-body">
-                <img src="media/example/calibration.png" width="100%" height="100%" alt="webgazer demo instructions"></img>
+                <!-- <img src="media/example/calibration.png" width="100%" height="100%" alt="webgazer demo instructions"></img> -->
+                <a> There will be instructions here</a>
               </div>
               <div class="modal-footer">
-                <button id="closeBtn" type="button" class="btn btn-default" data-dismiss="modal" onclick="skipCali()">Close & load saved model </button>
-                <button type="button" id='start_calibration' class="btn btn-primary" data-dismiss="modal" onclick="Restart()">Calibrate</button>
+                
+                <button id="closeBtn" type="button" class="btn btn-default" data-dismiss="modal" onclick="skipCali()" style="justify-content: center; margin: auto;">Begin Game Mode</button>
+                <!-- <button type="button" id='start_calibration' class="btn btn-primary" data-dismiss="modal" onclick="Restart()">Calibrate</button> -->
               </div>
             </div>
 
@@ -113,26 +116,30 @@ Instructions on use can be found in the README repository.
           function skipCali(){
             showVideoMode();
           };
+          //changing between head and keyboard
           function ChangeMode(){
-            if( document.getElementById("mode").innerHTML == "Head Movement"){
+            if( document.getElementById("mode").innerHTML == "Switch to Keyboard Movement"){
               console.log("keyboardMovement")
               modeInformation = "keyboardMovement";
-              document.getElementById("mode").innerHTML = "Keyboard Movement";
+              document.getElementById("modeInfo").innerHTML = "Currently: Keyboard Movement";
+              document.getElementById("mode").innerHTML = "Switch to Eye Movement";
             }
             else{
-              console.log("headMovement");
-              modeInformation = "headMovement";
-              document.getElementById("mode").innerHTML = "Head Movement";
+              console.log("eyeMovement");
+              modeInformation = "eyeMovement";
+              document.getElementById("modeInfo").innerHTML = "Currently: Eye Movement";
+              document.getElementById("mode").innerHTML = "Switch to Keyboard Movement";
             }
           };
+          //start-stop for robot control
           function StartStop(){
-            if( document.getElementById("startStop").innerHTML == "Stop"){
+            if( document.getElementById("startStop").innerHTML == "Click to Stop Robot"){
               startStopInformation = "stop";
-              document.getElementById("startStop").innerHTML = "Start";
+              document.getElementById("startStop").innerHTML = "Click to Start Robot";
             }
             else{
               startStopInformation = "start";
-              document.getElementById("startStop").innerHTML = "Stop";
+              document.getElementById("startStop").innerHTML = "Click to Stop Robot";
             }
           };
           function Homing(){

@@ -69,12 +69,12 @@
                           if (document.visibilityState === 'hidden' || boundedData == "no"){
                             dataToSend["x"]=-1;
                             dataToSend["y"]=-1;
-                            console.log(dataToSend["modality"])
+                            console.log(dataToSend["status"])
                             // sendData(dataToSend)
                           } else {
                             dataToSend["x"]=boundedData["x"];
                             dataToSend["y"]=boundedData["y"];
-                            console.log(dataToSend["modality"])
+                            console.log(dataToSend["status"])
                             // sendData(dataToSend)
                           }
                       }
@@ -147,8 +147,8 @@
           dataToSend2["status"]="start";
           dataToSend2["modality"]=typeInformation;
           dataToSend2["status"]=startStopInformation;
-          console.log("D", dataToSend2["keyD"])
-          console.log("W", dataToSend2["keyW"])
+          console.log(dataToSend2["status"])
+          // console.log("W", dataToSend2["keyW"])
         }
       }, 100);
 
