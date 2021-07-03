@@ -14,15 +14,24 @@ Instructions on use can be found in the README repository.
         <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
         <TITLE>WebGazer Demo</TITLE>
         <link rel="stylesheet" type="text/css" href="./css/style.css">
-        <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="./css/bootstrap.min.css">
         <!-- <script src="./tensorflow.js"></script> -->
+        <script> 
+          var facemeshReadings;
+          var vidInfoHeight;
+          var vidInfoWidth;
+          var modeInformation = "eyeMovement";
+          var startStopInformation = "stop";
+          var homingInformation = 0;
+          var typeInformation = "game";
+        </script>
         <script src="./webgazer.js"></script>
     </head>
     <body LANG="en-US" LINK="#0000ff" DIR="LTR">
       <canvas id="plotting_canvas" width="500" height="500" style="cursor:crosshair;"></canvas>
 
-        <script src="./node_modules/jquery/dist/jquery.min.js"></script>
-        <script src="./node_modules/sweetalert/dist/sweetalert.min.js"></script>
+      <script src="./js/jquery.min.js"></script>
+      <script src="./node_modules/sweetalert/dist/sweetalert.min.js"></script>
         <!-- <script src="./node_modules/request/dist/request.min.js"></script> -->
 
         <script src="./js/main2.js"></script>
@@ -34,23 +43,16 @@ Instructions on use can be found in the README repository.
           <div class="container-fluid">
             <div class="navbar-header">
               <!-- The hamburger menu button -->
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-                <span class="icon-bar">Menu</span>
-              </button>
-            </div>
-            <div class="collapse navbar-collapse" id="myNavbar">
-              <ul class="nav navbar-nav">
-                <!-- Accuracy -->
-                <li id="Accuracy"><a>Not yet Calibrated</a></li>
-                <li><a onclick="Restart()" href="#">Recalibrate</a></li>
-                <li><a onclick="webgazer.applyKalmanFilter(!webgazer.params.applyKalmanFilter)" href="#">Toggle Kalman Filter</a></li>
-              </ul>
-              <ul class="nav navbar-nav navbar-right">
-                <li><button class="helpBtn" data-toggle="modal" data-target="#helpModal"><a data-toggle="modal"><span class="glyphicon glyphicon-cog"></span> Help</a></li>
-              </ul>
+              <a id="ModeInfo"></a>
+              <a id="Accuracy"></a>
+              <a id="modeInfo" onclick="ChangeMode()">Currently: Eye Movement</a>
+              <button><a id="mode" onclick="ChangeMode()">Switch to Keyboard Movement</a></button>
+              <button><a id="startStop" onclick="StartStop()">Click to Start Robot</a></button>
+              <button><a id="homingMode" onclick="Homing()">Homing Sequences</a></button>
             </div>
           </div>
         </nav>
+        <div id="vidframe"></div>
         <!-- Calibration points -->
         <div class="calibrationDiv">
             <input type="button" class="Calibration" id="Pt1"></input>
@@ -75,8 +77,8 @@ Instructions on use can be found in the README repository.
                 <img src="media/example/calibration.png" width="100%" height="100%" alt="webgazer demo instructions"></img>
               </div>
               <div class="modal-footer">
-                <button id="closeBtn" type="button" class="btn btn-default" data-dismiss="modal">Close & load saved model </button>
-                <button type="button" id='start_calibration' class="btn btn-primary" data-dismiss="modal" onclick="Restart()">Calibrate</button>
+                <button id="closeBtn" type="button" class="btn btn-default" data-dismiss="modal" onclick="skipCalibration()">Close & load saved model </button>
+                <button type="button" id='start_calibration' class="btn btn-primary" data-dismiss="modal" onclick="Begin()">Calibrate</button>
               </div>
             </div>
 
@@ -85,14 +87,55 @@ Instructions on use can be found in the README repository.
 
         <!-- Latest compiled JavaScript -->
         <script src="./js/resize_canvas.js"></script>
-        <script src="./node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="./js/bootstrap.min.js"></script>
         <script>
-           function Restart(){
-              document.getElementById("Accuracy").innerHTML = "<a>Not yet Calibrated</a>";
-              webgazer.clearData();
-              ClearCalibration();
-              PopUpInstruction();
+          function Begin(){
+            document.getElementById("ModeInfo").innerHTML = "Normal Ridge Mode";
+            webgazer.setRegression('ridge'); /* currently must set regression and tracker */
+            Restart();
+          }
+          function Restart(){
+            webgazer.clearData();
+            ClearCalibration();
+            PopUpInstruction();
           };
+          function skipCalibration(){
+            showVideoMode();
+          };
+          // changing between head and keyboard
+          function ChangeMode(){
+            if( document.getElementById("mode").innerHTML == "Switch to Keyboard Movement"){
+              webgazer.pause();
+              document.getElementById(webgazer.params.gazeDotId).style.opacity= '0';
+              console.log("keyboardMovement")
+              modeInformation = "keyboardMovement";
+              document.getElementById("modeInfo").innerHTML = "Currently: Keyboard Movement";
+              document.getElementById("mode").innerHTML = "Switch to Eye Movement";
+            }
+            else{
+              webgazer.resume();
+              document.getElementById(webgazer.params.gazeDotId).style.opacity= '0.7';
+              console.log("eyeMovement");
+              modeInformation = "eyeMovement";
+              document.getElementById("modeInfo").innerHTML = "Currently: Eye Movement";
+              document.getElementById("mode").innerHTML = "Switch to Keyboard Movement";
+            }
+          };
+          // start-stop for robot control
+          function StartStop(){
+            if( document.getElementById("startStop").innerHTML == "Click to Stop Robot"){
+              startStopInformation = "stop";
+              document.getElementById("startStop").innerHTML = "Click to Start Robot";
+            }
+            else{
+              startStopInformation = "start";
+              document.getElementById("startStop").innerHTML = "Click to Stop Robot";
+            }
+          };
+          // reset robot to the home position
+          function Homing(){
+            homingInformation = 1;
+          }
         </script>
     </body>
 </html>

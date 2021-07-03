@@ -29,18 +29,25 @@
   
   
   window.onload = async function() {
-      window.xVal = -1;
-      window.yVal = -1;
+      console.log("here")
       var video = document.getElementById("vidframe");
       webgazer.params.showVideoPreview = true;
+      // var test = document.getElementById(webgazer.params.gazeDotId);
+      // console.log(test)
+      
+      // if(modeInformation == "headMovement"){
+      //   test.style.display= 'none';
+      // }
       //start the webgazer tracker
       await webgazer.setRegression('ridge') /* currently must set regression and tracker */
       // document.addEventListener('keydown', function(event){
       //   if(event.code == "Space"){
               //.setTracker('clmtrackr')
-
               webgazer.setGazeListener(function(data, clock) {
-                if(modeInformation == "headMovement"){
+                if(modeInformation == "headMovement" || modeInformation == "eyeMovement"){
+                  // if(modeInformation == "headMovement"){
+                  //   webgazer.params.gazeDotId.style.opacity= '0';
+                  // }
                   if(facemeshReadings != []){
                     var allReadings = facemeshReadings['0'];
                     if(allReadings != undefined){
@@ -69,12 +76,12 @@
                           if (document.visibilityState === 'hidden' || boundedData == "no"){
                             dataToSend["x"]=-1;
                             dataToSend["y"]=-1;
-                            console.log(dataToSend["status"])
+                            console.log(modeInformation)
                             // sendData(dataToSend)
                           } else {
                             dataToSend["x"]=boundedData["x"];
                             dataToSend["y"]=boundedData["y"];
-                            console.log(dataToSend["status"])
+                            console.log(modeInformation)
                             // sendData(dataToSend)
                           }
                       }
@@ -119,14 +126,6 @@
     document.addEventListener('keyup', function(event){
       if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","KeyW","KeyS","KeyA","KeyD"].indexOf(event.code) > -1) {
           event.preventDefault();
-          // dataToSend2["keyUP"]=0;
-          // dataToSend2["keyDOWN"]=0;
-          // dataToSend2["keyLEFT"]=0;
-          // dataToSend2["keyRIGHT"]=0;
-          // dataToSend2["keyW"]=0;
-          // dataToSend2["keyS"]=0;
-          // dataToSend2["keyA"]=0;
-          // dataToSend2["keyD"]=0;
       }
       if (event.code == "ArrowUp") dataToSend2["keyUP"]=0;
       else if (event.code == "ArrowDown") dataToSend2["keyDOWN"]=0;
@@ -137,7 +136,6 @@
       else if (event.code == "KeyA") dataToSend2["keyA"]=0;
       else if (event.code == "KeyD") dataToSend2["keyD"]=0;
     })
-      
         // Send current coordinates at time intervals
       window.setInterval(function(){
         if(modeInformation == "keyboardMovement"){
@@ -147,8 +145,7 @@
           dataToSend2["status"]="start";
           dataToSend2["modality"]=typeInformation;
           dataToSend2["status"]=startStopInformation;
-          console.log(dataToSend2["status"])
-          // console.log("W", dataToSend2["keyW"])
+          console.log(modeInformation)
         }
       }, 100);
 
@@ -162,21 +159,6 @@
       };
       setup();
   };
-
-  $(document).ready(function(){
-    $(".commands").click(function(){
-      var id = $(this).attr('id');
-      if(id == "Pt1B"){
-        sendData({"button": 1})
-      }
-      if(id == "Pt2B"){
-        sendData({"button": 2})
-      }
-      if(id == "Pt3B"){
-        sendData({"button": 3})
-      }
-    });
-  });
   
   function entireFace(facemeshArray){
     var bridgeOfNoseZ = facemeshArray[168][2];
