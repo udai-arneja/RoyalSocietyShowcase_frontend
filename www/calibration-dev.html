@@ -78,7 +78,7 @@ Instructions on use can be found in the README repository.
         </div>
 
         <!-- Modal -->
-        <div id="helpModal" class="modal fade" role="dialog" onload="Test()">
+        <div id="helpModal" class="modal fade" role="dialog">
           <div class="modal-dialog">
 
             <!-- Modal content-->
@@ -99,9 +99,6 @@ Instructions on use can be found in the README repository.
         <script src="./js/resize_canvas.js"></script>
         <script src="./js/bootstrap.min.js"></script>
         <script>
-          function Test(){
-            document.getElementById(webgazer.params.gazeDotId).style.opacity= '0';
-          }
            function Restart(){
               document.getElementById("Accuracy").innerHTML = "<a>Not yet Calibrated</a>";
               webgazer.clearData();
@@ -109,13 +106,16 @@ Instructions on use can be found in the README repository.
               PopUpInstruction();
           };
           function skipCali(){
-            document.getElementById(webgazer.params.gazeDotId).style.opacity= '0';
+            // document.getElementById(webgazer.params.gazeDotId).style.opacity=0;
+            // document.getElementById(webgazer.params.gazeDotId).style.opacity= '0';
+            // Test();
             showVideoMode();
           };
           //changing between head and keyboard
           function ChangeMode(){
             if( document.getElementById("mode").innerHTML == "Switch to Keyboard Movement"){
               webgazer.pause();
+              // clearScreen(document.getElementById("vidframe").getBoundingClientRect());
               modeInformation = "keyboardMovement";
               document.getElementById("modeInfo").innerHTML = "Currently: Keyboard Movement";
               document.getElementById("mode").innerHTML = "Switch to Head Movement";

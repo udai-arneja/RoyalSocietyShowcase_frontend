@@ -19,7 +19,6 @@ function showVideoMode() {
   $(".commands").show();
   $(".RegInformation").show();
   document.getElementById("webgazerNavbar").style.display= 'block';
-  // blueCanvas();
 }
 
 /**

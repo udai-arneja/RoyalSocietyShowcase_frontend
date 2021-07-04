@@ -29,25 +29,15 @@
   
   
   window.onload = async function() {
-      console.log("here")
       var video = document.getElementById("vidframe");
       webgazer.params.showVideoPreview = true;
-      // var test = document.getElementById(webgazer.params.gazeDotId);
-      // console.log(test)
-      
-      // if(modeInformation == "headMovement"){
-      //   test.style.display= 'none';
-      // }
       //start the webgazer tracker
       await webgazer.setRegression('ridge') /* currently must set regression and tracker */
       // document.addEventListener('keydown', function(event){
-      //   if(event.code == "Space"){
               //.setTracker('clmtrackr')
               webgazer.setGazeListener(function(data, clock) {
+                //if data is null then have the loading sign
                 if(modeInformation == "headMovement" || modeInformation == "eyeMovement"){
-                  // if(modeInformation == "headMovement"){
-                  //   webgazer.params.gazeDotId.style.opacity= '0';
-                  // }
                   if(facemeshReadings != []){
                     var allReadings = facemeshReadings['0'];
                     if(allReadings != undefined){
@@ -102,13 +92,13 @@
       //Set up the webgazer video feedback.
       var dataToSend2={};
       dataToSend2["keyUP"]=0;
-        dataToSend2["keyDOWN"]=0;
-        dataToSend2["keyLEFT"]=0;
-        dataToSend2["keyRIGHT"]=0;
-        dataToSend2["keyW"]=0;
-        dataToSend2["keyS"]=0;
-        dataToSend2["keyA"]=0;
-        dataToSend2["keyD"]=0;
+      dataToSend2["keyDOWN"]=0;
+      dataToSend2["keyLEFT"]=0;
+      dataToSend2["keyRIGHT"]=0;
+      dataToSend2["keyW"]=0;
+      dataToSend2["keyS"]=0;
+      dataToSend2["keyA"]=0;
+      dataToSend2["keyD"]=0;
       document.addEventListener('keydown', function(event){
         if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","KeyW","KeyS","KeyA","KeyD"].indexOf(event.code) > -1) {
             event.preventDefault();
@@ -158,6 +148,7 @@
         canvas.style.position = 'fixed';
       };
       setup();
+      console.log("here")
   };
   
   function entireFace(facemeshArray){
@@ -297,7 +288,10 @@
       return "no";
     }
     else{
-      blueScreen(prediction, boundingVid);
+      cleanScreen(boundingVid);
+      if(modeInformation == "eyeMovement"){
+        blueScreen(prediction, boundingVid);
+      }
       boundedCoords.x = (prediction.x-boundingVid.x)/boundingVid.width
       boundedCoords.y = (prediction.y-boundingVid.y)/boundingVid.height
     }
