@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<!--
+This is an example HTML that shows how WebGazer can be used on a website.
+This file provides the additional features:
+  * An integrated, intuitive and sleek action bar with an informative "help" module accessible at all times
+  * Structured 9-point calibration system
+  * Accuracy measure of predictions based on calibration process
+  * Video feedback regarding face positioning
+  * Improved eye predictions visible to the user
+Instructions on use can be found in the README repository.
+-->
+<html>
+    <head>
+        <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+        <TITLE>WebGazer Demo</TITLE>
+        <link rel="stylesheet" type="text/css" href="./css/style.css">
+        <link rel="stylesheet" href="./css/bootstrap.min.css">
+        <!-- <script src="./tensorflow.js"></script> -->
+        <script> 
+          var facemeshReadings;
+          var vidInfoHeight;
+          var vidInfoWidth;
+          var modeInformation = "eyeMovement";
+          var startStopInformation = "stop";
+          var homingInformation = 0;
+          var typeInformation = "game";
+          var practice = 1;
+        </script>
+        <script src="./webgazer.js"></script>
+    </head>
+    <body LANG="en-US" LINK="#0000ff" DIR="LTR">
+      <canvas id="plotting_canvas" width="500" height="500" style="cursor:crosshair;"></canvas>
+
+      <script src="./js/jquery.min.js"></script>
+      <script src="./node_modules/sweetalert/dist/sweetalert.min.js"></script>
+        <script src="./js/main2.js"></script>
+        <script src="./js/calibration.js"></script>
+        <script src="./js/precision_calculation.js"></script>
+        <script src="./js/precision_store_points.js"></script>
+
+        <nav id="webgazerNavbar" class="navbar navbar-default navbar-fixed-top">
+          <div class="container-fluid">
+            <div class="navbar-header">
+              <!-- The hamburger menu button -->
+              <a id="ModeInfo"></a>
+              <a id="Accuracy"></a>
+              <a id="modeInfo">Currently: Eye Movement</a>
+              <button><a id="mode" onclick="ChangeMode()">Switch to Keyboard Movement</a></button>
+              <button><a id="startStop" onclick="StartStop()">Click to Start Practice</a></button>
+              <button><a id="homingMode" onclick="Homing()">Homing Sequences</a></button>
+            </div>
+          </div>
+        </nav>
+
+        <!-- Background Image to Move Around -->
+        <div style="justify-content: right; margin-right: 0; margin-left: auto;z-index: 1;width:80%; background-color: darkmagenta;
+          border-style: solid; border-color: black; border-radius: 5px; height:calc(100vh - 45px);overflow: hidden" id="imageframe">
+          <div style="width: 500px; height: 400px; position: relative" > 
+            <img src="test.JPG" alt="something" id="image"  
+                style="position: absolute; top: 0px; left: 0px; z-index: 0;" />
+          </div>
+        </div>
+
+        <!-- Calibration points -->
+        <div class="calibrationDiv">
+            <input type="button" class="Calibration" id="Pt1"></input>
+            <input type="button" class="Calibration" id="Pt2"></input>
+            <input type="button" class="Calibration" id="Pt3"></input>
+            <input type="button" class="Calibration" id="Pt4"></input>
+            <input type="button" class="Calibration" id="Pt5"></input>
+            <input type="button" class="Calibration" id="Pt6"></input>
+            <input type="button" class="Calibration" id="Pt7"></input>
+            <input type="button" class="Calibration" id="Pt8"></input>
+            <input type="button" class="Calibration" id="Pt9"></input>
+        </div>
+        
+
+        <!-- Modal -->
+        <div id="helpModal" class="modal fade" role="dialog">
+          <div class="modal-dialog">
+
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-body">
+              <img src="media/example/calibration.png" width="100%" height="100%" alt="webgazer demo instructions"></img>
+            </div>
+            <div class="modal-footer">
+              <button id="closeBtn" type="button" class="btn btn-default" data-dismiss="modal" onclick="skipCalibration()">Close & load saved model </button>
+              <button type="button" id='start_calibration' class="btn btn-primary" data-dismiss="modal" onclick="Begin()">Calibrate</button>
+            </div>
+          </div>
+
+          </div>
+        </div>
+
+        <!-- Latest compiled JavaScript -->
+        <script src="./js/resize_canvas.js"></script>
+        <script src="./js/bootstrap.min.js"></script>
+        <script>
+          function Begin(){
+            webgazer.setRegression('ridge'); /* currently must set regression and tracker */
+            Restart();
+          }
+          function Restart(){
+            webgazer.clearData();
+            ClearCalibration();
+            PopUpInstruction();
+          };
+          function skipCalibration(){
+            // console.log(document.getElementById("imageframe").offsetLeft);
+            showPracticeCanvas();
+          };
+          // changing between head and keyboard
+          function ChangeMode(){
+            if( document.getElementById("mode").innerHTML == "Switch to Keyboard Movement"){
+              webgazer.pause();
+              document.getElementById(webgazer.params.gazeDotId).style.opacity= '0';
+              console.log("keyboardMovement")
+              modeInformation = "keyboardMovement";
+              document.getElementById("modeInfo").innerHTML = "Currently: Keyboard Movement";
+              document.getElementById("mode").innerHTML = "Switch to Eye Movement";
+            }
+            else{
+              webgazer.resume();
+              document.getElementById(webgazer.params.gazeDotId).style.opacity= '0.7';
+              console.log("eyeMovement");
+              modeInformation = "eyeMovement";
+              document.getElementById("modeInfo").innerHTML = "Currently: Eye Movement";
+              document.getElementById("mode").innerHTML = "Switch to Keyboard Movement";
+            }
+          };
+          // start-stop for Practice control
+          function StartStop(){
+            if( document.getElementById("startStop").innerHTML == "Click to Stop Practice"){
+              startStopInformation = "stop";
+              document.getElementById("startStop").innerHTML = "Click to Start Practice";
+            }
+            else{
+              startStopInformation = "start";
+              document.getElementById("startStop").innerHTML = "Click to Stop Practice";
+            }
+          };
+          // reset Practice to the home position
+          function Homing(){
+            homingInformation = 1;
+          }
+        </script>
+    </body>
+    <style>
+      #vidframe{
+      justify-content: right;
+      margin-right: 0;
+      margin-left: auto;
+      z-index: 1;
+      width:80%;
+      border-style: solid;
+      border-color: black;
+      border-radius: 5px;
+      height:calc(100vh - 45px);
+    }
+    </style>
+</html>

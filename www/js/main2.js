@@ -29,7 +29,8 @@
   
   
   window.onload = async function() {
-      var video = document.getElementById("vidframe");
+      
+      
       webgazer.params.showVideoPreview = true;
       //start the webgazer tracker
       await webgazer.setRegression('ridge') /* currently must set regression and tracker */
@@ -39,57 +40,32 @@
                 //if data is null then have the loading sign
                 if(modeInformation == "headMovement" || modeInformation == "eyeMovement"){
                   if(facemeshReadings != []){
-                    var allReadings = facemeshReadings['0'];
-                    if(allReadings != undefined){
-                      var facemesh = allReadings['scaledMesh'];
-                      var avgOne = entireFace(facemesh);
-                      var avgTwo = eyesAvg(facemesh);
-                      diffAverages={
-                        "avgOne":parseFloat(avgOne),
-                        "avgTwo":parseFloat(avgTwo)
-                      };
-                      dataToSend = {...diffAverages, ...leftEye(facemesh), ...rightEye(facemesh), ...noseBridge(facemesh), ...noseTop(facemesh), ...mouthMiddle(facemesh)};
-                      //status information
-                      dataToSend["control"]="head";
-                      dataToSend["homing"]=homingInformation;
-                      homingInformation=0;
-                      dataToSend["status"]="start";
-                      dataToSend["modality"]=typeInformation;
-                      dataToSend["status"]=startStopInformation;
-                    }
-                  }
-                  let boundingVid = video.getBoundingClientRect();
-                  // adds a box depending on which segement the user is looking
-                  if(boundingVid.width !=0){
-                      if (data!= null){
-                          boundedData = bound(data, boundingVid)
-                          if (document.visibilityState === 'hidden' || boundedData == "no"){
-                            dataToSend["x"]=-1;
-                            dataToSend["y"]=-1;
-                            console.log(modeInformation)
-                            // sendData(dataToSend)
-                          } else {
-                            dataToSend["x"]=boundedData["x"];
-                            dataToSend["y"]=boundedData["y"];
-                            console.log(modeInformation)
-                            // sendData(dataToSend)
-                          }
-                      }
-                      else{
-                          console.log("null via message");
+                      var allReadings = facemeshReadings['0'];
+                      if(allReadings != undefined){
+                          var facemesh = allReadings['scaledMesh'];
+                          var dataToSend={}
+                          dataToSend = {...leftEye(facemesh), ...rightEye(facemesh)};
+                          //status information
+                          dataToSend["control"]="head";
+                          dataToSend["homing"]=homingInformation;
+                          homingInformation=0;
+                          dataToSend["status"]="start";
+                          dataToSend["modality"]=typeInformation;
+                          dataToSend["status"]=startStopInformation;
                       }
                   }
-                    // console.log(data); /* data is an object containing an x and y key which are the x and y prediction coordinates (no bounds limiting) */
-                    // console.log(clock); /* elapsed time in milliseconds since webgazer.begin() was called */
+                  if(practice == 1){
+                      imageCanvasManipulation(data);
+                  }
+                  else{
+                      videoManipulation(data, dataToSend);
+                  }
               }})
               .saveDataAcrossSessions(false)
               .begin();
               webgazer.showVideoPreview(true) /* shows all video previews */
                   .showPredictionPoints(true) /* shows a square every 100 milliseconds where current prediction is */
                   .applyKalmanFilter(true); /* Kalman Filter defaults to on. Can be toggled by user. */
-      //   }
-      // })
-      //Set up the webgazer video feedback.
       var dataToSend2={};
       dataToSend2["keyUP"]=0;
       dataToSend2["keyDOWN"]=0;
@@ -135,12 +111,11 @@
           dataToSend2["status"]="start";
           dataToSend2["modality"]=typeInformation;
           dataToSend2["status"]=startStopInformation;
-          console.log(modeInformation)
+          // console.log(modeInformation)
         }
       }, 100);
 
       var setup = function() {
-  
         //Set up the main canvas. The main canvas is used to calibrate the webgazer.
         var canvas = document.getElementById("plotting_canvas");
         canvas.width = window.innerWidth;
@@ -148,28 +123,83 @@
         canvas.style.position = 'fixed';
       };
       setup();
-      console.log("here")
   };
-  
-  function entireFace(facemeshArray){
-    var bridgeOfNoseZ = facemeshArray[168][2];
-    var foreheadZ = facemeshArray[151][2];
-    var nosePointZ = facemeshArray[4][2];
-    var chinZ = facemeshArray[175][2];
-    var rightCheekZ = facemeshArray[101][2];
-    var leftCheekZ = facemeshArray[330][2];
-    var faceAvg = ((bridgeOfNoseZ+foreheadZ+nosePointZ+chinZ+rightCheekZ+leftCheekZ)/6);
-    return faceAvg.toFixed(5);
-  }
-  
-  function eyesAvg(facemeshArray){
-    var underLeftEyeZ = facemeshArray[450][2];
-    var aboveLeftEyeZ = facemeshArray[443][2];
-    var underRightEyeZ = facemeshArray[230][2];
-    var aboveRightEyeZ = facemeshArray[223][2];
-    var eyesAvg = ((underLeftEyeZ+aboveLeftEyeZ+underRightEyeZ+aboveRightEyeZ)/4);
-    return eyesAvg.toFixed(5);
-  }
+
+  function imageCanvasManipulation(GazeData){
+      var imagef = document.getElementById("imageframe");
+      let boundingImage = imagef.getBoundingClientRect();
+      if(boundingImage.width !=0){
+          if (GazeData != null){
+              coordinates = bound(GazeData, boundingImage)
+              imgMovement = coordinates[1]
+              //going to return it to here to check whether movement is valid
+              if(imgMovement["x"]==1){
+                image.style.left= (image.offsetLeft - 10)+"px";
+              }
+              else if(imgMovement["x"]==-1){
+                image.style.left= (image.offsetLeft + 10)+"px";
+              }
+              if(imgMovement["y"]==1){
+                image.style.top= (image.offsetTop - 10)+"px";
+              }
+              else if(imgMovement["y"]==-1){
+                image.style.top= (image.offsetTop + 10)+"px";
+              }
+              if(image.style.left > "0px"){
+                image.style.left = "9px"
+              }
+              if(image.style.top > "0px"){
+                image.style.top = "9px"
+              }
+              //for right and top - use image frame and remaining height/width of the image left
+              if((image.offsetWidth + image.offsetLeft) - imagef.offsetWidth < 0){
+                image.style.left = -(image.offsetWidth - imagef.offsetWidth + 9) + "px"
+              }
+              if((image.offsetHeight + image.offsetTop) - imagef.offsetHeight < 0){
+                image.style.top = -(image.offsetHeight - imagef.offsetHeight + 9) + "px"
+              }
+              console.log("width", image.offsetWidth)
+              console.log("left", image.offsetLeft)
+              console.log("width f", imagef.offsetWidth)
+              // console.log((image.offsetWidth - image.offsetLeft) - imagef.offsetWidth)
+              // if(image.style.right < "0px"){
+              //   image.style.right = "9px"
+              // }
+              // if(image.style.left > "0px"){
+              //   image.style.left = "9px"
+              // }
+          }
+      }
+      else{
+          console.log("Image not loaded yet");
+      }
+  };
+
+  function videoManipulation(GazeData, dataToSend){
+      var video = document.getElementById("vidframe");
+      let boundingVid = video.getBoundingClientRect();
+      if(boundingVid.width !=0){
+          if (GazeData != null){
+              coordinates = bound(GazeData, boundingVid)
+              boundedData = coordinates[0]
+              if (document.visibilityState === 'hidden' || boundedData == "no"){
+                  dataToSend["x"]=-1;
+                  dataToSend["y"]=-1;
+                  console.log(modeInformation)
+                  // sendData(dataToSend)
+              } 
+              else {
+                  dataToSend["x"]=boundedData["x"];
+                  dataToSend["y"]=boundedData["y"];
+                  console.log(modeInformation)
+                    // sendData(dataToSend)
+              }
+          }
+      }
+      else{
+          console.log("Video not loaded yet");
+      }
+  };
 
   function getXYZ(facemeshArray, featureNumber){
     var featureX = parseFloat(facemeshArray[featureNumber][0].toFixed(5));
@@ -177,37 +207,7 @@
     var featureZ = parseFloat(facemeshArray[featureNumber][2].toFixed(5))
     return [featureX,featureY,featureZ]
   };
-  
-  function noseBridge(facemeshArray){
-    noseBridgeInfo = getXYZ(facemeshArray, 168)
-    noseBridgeData={
-      "noseBridgeX":noseBridgeInfo[0],
-      "noseBridgeY":noseBridgeInfo[1],
-      "noseBridgeZ":noseBridgeInfo[2]
-    };
-    return noseBridgeData;
-  }
-  
-  function noseTop(facemeshArray){
-    noseTopInfo = getXYZ(facemeshArray, 94)
-    noseTopData={
-      "noseTopX":noseTopInfo[0],
-      "noseTopY":noseTopInfo[1],
-      "noseTopZ":noseTopInfo[2]
-    };
-    return noseTopData;
-  }
-  
-  function mouthMiddle(facemeshArray){
-    mouthMiddleInfo = getXYZ(facemeshArray, 14)
-    mouthData={
-      "mouthMiddleX":mouthMiddleInfo[0],
-      "mouthMiddleY":mouthMiddleInfo[1],
-      "mouthMiddleZ":mouthMiddleInfo[2]
-    };
-    return mouthData;
-  }
-  
+
   function rightEye(facemeshArray){
     underRightEyeInfo = getXYZ(facemeshArray, 23)
     aboveRightEyeInfo = getXYZ(facemeshArray, 27)
@@ -235,7 +235,6 @@
     };
     return eyeData;
   }
-
   
   // Set to true if you want to save the data even if you reload the page.
   window.saveDataAcrossSessions = true;
@@ -244,58 +243,78 @@
       webgazer.end();
   }
 
-  function blueScreen(gazeLoc, vidDims){
+  function segmentScreen(gazeLoc, containerDims){
+      var canvas = document.getElementById("plotting_canvas");
+      canvas.style.zIndex=9999;
+      var ctx = canvas.getContext("2d");
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = 'rgba(255,209,220,0.3)';
+      var xThird = containerDims.x+(containerDims.width/3);
+      var xTwoThird = containerDims.x+2*(containerDims.width/3);
+      var yThird = containerDims.y+(containerDims.height/3);
+      var yTwoThird = containerDims.y+2*(containerDims.height/3);
+      var xStart = 0;
+      var yStart = 0;
+      var x = 0;
+      var y = 0;
+      // identifying x start
+      if(gazeLoc.x < xThird){
+          xStart = containerDims.x;
+          x = -1;
+      }
+      else if(gazeLoc.x < xTwoThird){
+          xStart = xThird;
+          x = 0;
+      }
+      else{
+          xStart = xTwoThird;
+          x = 1;
+      }
+      // identifying y start
+      if(gazeLoc.y < yThird){
+          yStart = containerDims.y;
+          y = -1;
+      }
+      else if(gazeLoc.y < yTwoThird){
+          yStart = yThird;
+          y = 0;
+      }
+      else{
+          yStart = yTwoThird;
+          y = 1;
+      }
+      ctx.fillRect(xStart, yStart, containerDims.width/3, containerDims.height/3);
+      return {"x":x, "y":y}
+  }
+
+  function cleanScreen(){
     var canvas = document.getElementById("plotting_canvas");
     var ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = 'rgba(255,209,220,0.3)';
-    var xHalfOfTheVid =((vidDims.right-vidDims.x)/2+vidDims.x);
-    var yHalfOfTheVid =((vidDims.bottom-vidDims.y)/2+vidDims.y);
-    if(gazeLoc.x < xHalfOfTheVid){
-      var xStart = vidDims.x;
-      var xEnd = xHalfOfTheVid-vidDims.x;
-    }
-    else{
-      var xStart = xHalfOfTheVid;
-      var xEnd = vidDims.right;
-    }
-    if(gazeLoc.y < yHalfOfTheVid){
-      var yStart = vidDims.y;
-      var yEnd = yHalfOfTheVid-vidDims.y;
-    }
-    else{
-      var yStart = yHalfOfTheVid;
-      var yEnd = vidDims.bottom;
-    }
-    // console.log(vidDims.x, vidDims.right, xStart, xEnd);
-    ctx.fillRect(xStart, yStart, xEnd, yEnd);
-  }
-
-  function cleanScreen(vidDims){
-    var canvas = document.getElementById("plotting_canvas");
-    var ctx = canvas.getContext("2d");
-    ctx.clearRect(vidDims.x, vidDims.y, vidDims.right, vidDims.bottom);
   }
   
-  bound = function(prediction, boundingVid){
-    boundedCoords={"x":0, "y":0}
-    if(prediction.x < boundingVid.x || prediction.x > boundingVid.right){
-      cleanScreen(boundingVid);
-      return "no";
-    }
-    if(prediction.y < boundingVid.y || prediction.y > boundingVid.bottom){
-      cleanScreen(boundingVid);
-      return "no";
-    }
-    else{
-      cleanScreen(boundingVid);
-      if(modeInformation == "eyeMovement"){
-        blueScreen(prediction, boundingVid);
+  bound = function(prediction, boundingContainer){
+      boundedCoords={"x":0, "y":0}
+      // finding out whether gaze is inside the image/video canvas
+      if(prediction.x < boundingContainer.x || prediction.x > boundingContainer.right){
+          cleanScreen();
+          return "no";
       }
-      boundedCoords.x = (prediction.x-boundingVid.x)/boundingVid.width
-      boundedCoords.y = (prediction.y-boundingVid.y)/boundingVid.height
-    }
-    return boundedCoords;
+      if(prediction.y < boundingContainer.y || prediction.y > boundingContainer.bottom){
+          cleanScreen(boundingContainer);
+          return "no";
+      }
+      else{
+          if(modeInformation == "eyeMovement"){
+              imgMovement = segmentScreen(prediction, boundingContainer);
+          }
+          boundedCoords.x = (prediction.x-boundingContainer.x)/boundingContainer.width
+          boundedCoords.y = (prediction.y-boundingContainer.y)/boundingContainer.height
+      }
+      var returnCoordinates=[]
+      returnCoordinates[0]=boundedCoords
+      returnCoordinates[1]=imgMovement
+      return returnCoordinates;
   };
   
   

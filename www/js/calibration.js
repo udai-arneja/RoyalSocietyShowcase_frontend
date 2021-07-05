@@ -8,7 +8,13 @@ var CalibrationPoints={};
   $(".Calibration").hide();
   $(".commands").hide();
   $(".RegInformation").hide();
-  document.getElementById("vidframe").style.display= 'none';
+  if(practice == 1){
+    document.getElementById("imageframe").style.display= 'none';
+    document.getElementById("image").style.display= 'none';
+  }
+  else{
+    document.getElementById("vidframe").style.display= 'none';
+  }
   var canvas = document.getElementById("plotting_canvas");
   canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
 }
@@ -21,11 +27,29 @@ function showVideoMode() {
   document.getElementById("webgazerNavbar").style.display= 'block';
 }
 
+function showPracticeCanvas() {
+  var imageframe = document.getElementById("imageframe");
+  imageframe.style.display= 'block';
+  var image = document.getElementById("image");
+  image.style.display= 'block';
+  image.style.left= '-100px';
+  // console.log(document.getElementById("image").offsetLeft);//
+  $(".commands").show();
+  $(".RegInformation").show();
+  document.getElementById("webgazerNavbar").style.display= 'block';
+}
+
 /**
  * Show the instruction of using calibration at the start up screen.
  */
 function PopUpInstruction(){
-  document.getElementById("vidframe").style.display= 'none';
+  if(practice == 1){
+    document.getElementById("imageframe").style.display= 'none';
+    document.getElementById("image").style.display= 'none';
+  }
+  else{
+    document.getElementById("vidframe").style.display= 'none';
+  }
   ClearCanvas();
   swal({
     title:"Calibration",
@@ -121,10 +145,14 @@ $(document).ready(function(){
                           if (isConfirm){
                             //clear the calibration & hide the last middle button
                             ClearCanvas();
-                            showVideoMode();
+                            if(practice == 1){
+                              showPracticeCanvas();
+                            }
+                            else{
+                              showVideoMode();
+                            }
                           } else {
                             //use restart function to restart the calibration
-                            document.getElementById("Accuracy").innerHTML = "<a>Not yet Calibrated</a>";
                             webgazer.clearData();
                             ClearCalibration();
                             ClearCanvas();
